@@ -1,9 +1,25 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Question } from './quiz/entity/quiz.entity';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
-  imports: [],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'db.ujalksimowkriabihbwh.supabase.co',
+      port: 5432,
+      username: 'postgres',
+      password: 'Renolation29@@',
+      database: 'quiz',
+      entities: [Question],
+      synchronize: true,
+
+    }),
+    QuizModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
