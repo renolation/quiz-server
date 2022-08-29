@@ -51,5 +51,5 @@ export class UpdateQuizDto {
 
   @IsNumber()
   @IsOptional()
-  timestamp: string;
+  timestamp: number;
 }

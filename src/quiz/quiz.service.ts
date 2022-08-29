@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Question } from './entity/quiz.entity';
+import { Question } from './entity/question.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { MyOption } from './entity/option.entity';
+import { UpdateQuizDto } from "./dtos/update-quiz.dto";
 
 
 @Injectable()
@@ -27,5 +28,23 @@ export class QuizService {
     async findAll()  {
        const items = await this.repo.find({});
         return JSON.stringify(items);
+    }
+
+    async update(id: number, attrs: Partial<Question>) {
+        const question = await this.findOne(id);
+        if(!question){
+            throw new NotFoundException('Question not found');
+        }
+        Object.assign(question, attrs);
+        await this.repo.save(question);
+        return JSON.stringify(question);
+    }
+
+    async remove(id: number) {
+        const question = await this.findOne(id);
+        if(!question){
+            throw new NotFoundException('Question not found');
+        }
+        return this.repo.remove(question);
     }
 }
