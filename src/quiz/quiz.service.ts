@@ -9,11 +9,10 @@ import { MyOption } from './entity/option.entity';
 export class QuizService {
     constructor(@InjectRepository(Question) private repo: Repository<Question>) { }
 
-
-    async create(question: string, answers: MyOption[], imageUrl: string, answer: number,level: string, difficult: number, category: string, isEnable: boolean, explaination: string, timestamp: number){
-        const myquestion = this.repo.create({question, answers, imageUrl, answer,level, difficult, category, isEnable, explaination, timestamp});
-        this.repo.save(myquestion);
-        return JSON.stringify(myquestion);
+    async create(question: string, answers: MyOption[], imageUrl: string, answer: number,level: string, difficult: number, category: string, isEnable: boolean, explanation: string, timestamp: number){
+        const myQuestion = this.repo.create({question, answers, imageUrl, answer,level, difficult, category, isEnable, explanation: explanation, timestamp});
+        await this.repo.save(myQuestion);
+        return JSON.stringify(myQuestion);
     }
 
     async findOne(id: number) {
@@ -25,4 +24,8 @@ export class QuizService {
         return question;
     }
 
+    async findAll()  {
+       const items = await this.repo.find({});
+        return JSON.stringify(items);
+    }
 }

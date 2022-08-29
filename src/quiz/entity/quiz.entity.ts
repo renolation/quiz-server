@@ -16,20 +16,23 @@ export class Question {
     @Column()
     question: string;
 
+    //region old
     // @Column("int", { array: true })
     // answers: string[]
 
     // @Column('simple-array', { nullable: true , array: true},)
     // answers: string[];
 
-    @Column({
-        type: 'jsonb',
-        nullable: true,
-      })
-      answers: MyOption[];
+    // @Column({
+    //     type: 'json',
+    //     nullable: true,
+    //   })
+    //   answers: MyOption[];
 
-    // @Column()
-    // answers: string;
+    //endregion
+
+    @Column('jsonb', {nullable: true})
+    answers?: MyOption[];
 
     @Column()
     imageUrl: string;
@@ -50,7 +53,7 @@ export class Question {
     isEnable: boolean;
 
     @Column()
-    explaination: string;
+    explanation: string;
 
     @Column()
     timestamp: number;
