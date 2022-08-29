@@ -16,8 +16,14 @@ export class Question {
     @Column()
     question: string;
 
-    @Column()
-    answers: Option[];
+    // @Column("int", { array: true })
+    // answers: string[]
+
+    @Column('simple-array', { nullable: true , array: true},)
+    answers: string[];
+
+    // @Column()
+    // answers: string;
 
     @Column()
     imageUrl: string;
@@ -41,6 +47,6 @@ export class Question {
     explaination: string;
 
     @Column()
-    timestamp: string;
+    timestamp: number;
 
 }

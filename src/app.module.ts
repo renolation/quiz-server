@@ -9,11 +9,11 @@ import { QuizModule } from './quiz/quiz.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db.ujalksimowkriabihbwh.supabase.co',
+      host: 'db.tstdfwkbjwzfzbqgpfvt.supabase.co',
       port: 5432,
       username: 'postgres',
       password: 'Renolation29@@',
-      database: 'quiz',
+      database: 'postgres',
       entities: [Question],
       synchronize: true,
 
