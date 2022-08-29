@@ -3,7 +3,7 @@ import {
     Column,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import { Option } from './option.entity';
+import { MyOption } from './option.entity';
 
 @Entity()
 
@@ -19,8 +19,14 @@ export class Question {
     // @Column("int", { array: true })
     // answers: string[]
 
-    @Column('simple-array', { nullable: true , array: true},)
-    answers: string[];
+    // @Column('simple-array', { nullable: true , array: true},)
+    // answers: string[];
+
+    @Column({
+        type: 'jsonb',
+        nullable: true,
+      })
+      answers: MyOption[];
 
     // @Column()
     // answers: string;
