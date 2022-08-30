@@ -11,5 +11,5 @@ import {
 
 export interface MyOption {
     text: string;
-    imageUrl: string;
+    // imageUrl: string;
   }
