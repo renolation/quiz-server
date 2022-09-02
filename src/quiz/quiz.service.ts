@@ -4,16 +4,28 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { MyOption } from './entity/option.entity';
 import { UpdateQuizDto } from "./dtos/update-quiz.dto";
+import { CloudStorageService } from "../core/services/cloud-storage.service";
+import { File } from "../core/interfaces/file.interface";
 
 
 @Injectable()
 export class QuizService {
-    constructor(@InjectRepository(Question) private repo: Repository<Question>) { }
+    constructor(
+      @InjectRepository(Question) private repo: Repository<Question>,
+      private cloudStorageService: CloudStorageService
+      ) { }
 
     async create(question: string, answers: MyOption[], imageUrl: string, answer: number,level: string, difficult: number, category: string, isEnable: boolean, explanation: string, timestamp: number){
         const myQuestion = this.repo.create({question, answers, imageUrl, answer,level, difficult, category, isEnable, explanation: explanation, timestamp});
         await this.repo.save(myQuestion);
         return JSON.stringify(myQuestion);
+    }
+
+    async uploadFile(image: File){
+        const file = await this.cloudStorageService.uploadFile(image, '/quiz/image/');
+        const url = file.publicUrl;
+        const name = file.name;
+        return file;
     }
 
     async findOne(id: number) {

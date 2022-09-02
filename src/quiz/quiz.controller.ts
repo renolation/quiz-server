@@ -1,15 +1,34 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post, UploadedFile,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors
+} from "@nestjs/common";
 import { QuizService } from "./quiz.service";
 import { CreateQuizDto } from "./dtos/create-quiz.dto";
 import { UpdateQuizDto } from "./dtos/update-quiz.dto";
 import { CreateImageQuizDto } from "./dtos/create-image-quiz.dto";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { FileFieldsInterceptor, FileInterceptor } from "@nestjs/platform-express";
+import { CloudStorageService } from "../core/services/cloud-storage.service";
+import { ApiBearerAuth, ApiConsumes, ApiOperation } from "@nestjs/swagger";
+import { memoryStorage } from "multer";
+import { File } from "../core/interfaces/file.interface";
+import { Question } from "./entity/question.entity";
 
 @Controller("quiz")
 export class QuizController {
 
 
-  constructor(private quizService: QuizService) {
+  constructor(
+    private quizService: QuizService,
+  ) {
   }
 
   @Post("/create")
@@ -43,6 +62,35 @@ export class QuizController {
     // return this.quizService.create(body.question, answers, body.imageUrl, body.answer, body.level,
     //   body.difficult, body.category, body.isEnable, body.explanation, timestamp);
   }
+
+
+  @ApiOperation({ summary: 'Update my User' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: memoryStorage(),
+      limits: { fileSize: 2097152 }, // 2MB --- 2*2^20
+      fileFilter: (req, file, callback) => {
+        return file.mimetype.match(/image\/(jpg|jpeg|png|gif)$/)
+          ? callback(null, true)
+          : callback(new BadRequestException('Only image files are allowed'), false);
+      }
+    })
+  )
+  // @Patch('me')
+  // async updateMe(@Body() userDto: UpdateUserDto, @UserInfo() user: User, @UploadedFile() avatar: File): Promise<User> {
+  //   const updatedUser = await this.service.updateUser(user, userDto, avatar);
+  //   return plainToClass(User, updatedUser);
+  // }
+  @Post('image')
+  async uploadFile(@UploadedFile() image: File): Promise<Question> {
+    const file = await this.quizService.uploadFile(image);
+
+    return file.publicUrl;
+  }
+
+
 
 
   @Get("/:id")
