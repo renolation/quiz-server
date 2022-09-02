@@ -6,6 +6,8 @@ import { MyOption } from './entity/option.entity';
 import { UpdateQuizDto } from "./dtos/update-quiz.dto";
 import { CloudStorageService } from "../core/services/cloud-storage.service";
 import { File } from "../core/interfaces/file.interface";
+import { parse } from "path";
+import { CreateImageQuizDto } from "./dtos/create-image-quiz.dto";
 
 
 @Injectable()
@@ -21,10 +23,18 @@ export class QuizService {
         return JSON.stringify(myQuestion);
     }
 
-    async uploadFile(image: File){
+    private setFilename(uploadedFile: File, body: CreateImageQuizDto, index: number): string {
+        const fileName = parse(uploadedFile.originalname);
+        return `${body.category}_${body.level}_Difficult-${body.difficult}_Option-${index}${fileName.ext}`;
+        // return `${fileName.name}-${Date.now()}${fileName.ext}`.replace(/^\.+/g, '').replace(/^\/+/g, '').replace(/\r|\n/g, '_');
+    }
+
+    async uploadFile(image: File, body: CreateImageQuizDto, index: number){
+        image.filename = this.setFilename(image, body, index);
+        console.log(image);
         const file = await this.cloudStorageService.uploadFile(image, '/quiz/image/');
-        const url = file.publicUrl;
-        const name = file.name;
+        // // const url = file.publicUrl;
+        // // const name = file.name;
         return file;
     }
 

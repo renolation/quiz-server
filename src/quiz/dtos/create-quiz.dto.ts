@@ -26,7 +26,7 @@ export class CreateQuizDto {
   answers: MyOption[];
 
   @IsString()
-  @IsNotEmpty()
+  // @IsNotEmpty()
   imageUrl: string;
 
   @IsNumber()

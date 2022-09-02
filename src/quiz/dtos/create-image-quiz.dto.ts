@@ -22,8 +22,8 @@ export class CreateImageQuizDto {
 
   @IsString()
   @Type(() => String)
-  @IsNotEmpty()
-  imageUrl: string;
+  // @IsNotEmpty()
+  imageUrl:  string;
 
   @IsNumber()
   @Type(() => Number)

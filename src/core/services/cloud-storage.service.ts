@@ -31,7 +31,7 @@ export class CloudStorageService {
   }
 
   async uploadFile(uploadedFile: File, destination: string): Promise<any> {
-    const fileName = this.setDestination(destination) + this.setFilename(uploadedFile);
+    const fileName = this.setDestination(destination) + uploadedFile.filename;
     const file = this.bucket.file(fileName);
     try {
       await file.save(uploadedFile.buffer, { contentType: uploadedFile.mimetype });

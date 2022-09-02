@@ -27,7 +27,7 @@ export class QuizController {
 
 
   constructor(
-    private quizService: QuizService,
+    private quizService: QuizService
   ) {
   }
 
@@ -40,57 +40,74 @@ export class QuizController {
   }
 
   @Post("/createImage")
+  @ApiConsumes("multipart/form-data")
+
   @UseInterceptors(FileFieldsInterceptor(
     [
       { name: "option1", maxCount: 1 },
       { name: "option2", maxCount: 1 },
       { name: "option3", maxCount: 1 },
       { name: "option4", maxCount: 1 }
-    ]
+    ],
+    {
+      storage: memoryStorage(),
+      limits: { fileSize: 2097152 }, // 2MB --- 2*2^20
+      fileFilter: (req, file, callback) => {
+        return file.mimetype.match(/image\/(jpg|jpeg|png)$/)
+          ? callback(null, true)
+          : callback(new BadRequestException("Only image files are allowed"), false);
+      }
+    }
   ))
-  createImageAnswers(@Body() body: CreateImageQuizDto, @UploadedFiles() files: {
+  async createImageAnswers(@Body() body: CreateImageQuizDto, @UploadedFiles() files: {
     option1?: Express.Multer.File[],
     option2?: Express.Multer.File[],
     option3?: Express.Multer.File[],
     option4?: Express.Multer.File[]
   }) {
-    console.log(body);
     const timestamp = Math.floor(Date.now() / 1000);
-    let answers = [];
-    console.log(files);
 
-    // return this.quizService.create(body.question, answers, body.imageUrl, body.answer, body.level,
-    //   body.difficult, body.category, body.isEnable, body.explanation, timestamp);
+    let answers = [];
+    const fileOption1 = await this.quizService.uploadFile(files['option1'][0], body, 1);
+    const fileOption2 = await this.quizService.uploadFile(files['option2'][0], body, 2);
+    const fileOption3 = await this.quizService.uploadFile(files['option3'][0], body, 3);
+    const fileOption4 = await this.quizService.uploadFile(files['option4'][0], body, 4);
+
+    answers.push(fileOption1.publicUrl);
+    answers.push(fileOption2.publicUrl);
+    answers.push(fileOption3.publicUrl);
+    answers.push(fileOption4.publicUrl);
+
+    console.log(answers);
+
+    return this.quizService.create(body.question, answers, body.imageUrl, body.answer, body.level,
+      body.difficult, body.category, body.isEnable, body.explanation, timestamp);
   }
 
 
-  @ApiOperation({ summary: 'Update my User' })
-  @ApiConsumes('multipart/form-data')
+
+  @ApiOperation({ summary: "Update my User" })
+  @ApiConsumes("multipart/form-data")
   @ApiBearerAuth()
   @UseInterceptors(
-    FileInterceptor('avatar', {
-      storage: memoryStorage(),
+    FileInterceptor("avatar", {
+      storage: memoryStorage(
+      ),
       limits: { fileSize: 2097152 }, // 2MB --- 2*2^20
       fileFilter: (req, file, callback) => {
-        return file.mimetype.match(/image\/(jpg|jpeg|png|gif)$/)
+        return file.mimetype.match(/image\/(jpg|jpeg|png)$/)
           ? callback(null, true)
-          : callback(new BadRequestException('Only image files are allowed'), false);
+          : callback(new BadRequestException("Only image files are allowed"), false);
       }
     })
   )
-  // @Patch('me')
-  // async updateMe(@Body() userDto: UpdateUserDto, @UserInfo() user: User, @UploadedFile() avatar: File): Promise<User> {
-  //   const updatedUser = await this.service.updateUser(user, userDto, avatar);
-  //   return plainToClass(User, updatedUser);
+
+  // @Post("image")
+  // async uploadFile(@UploadedFile() image: File): Promise<Question> {
+  //   const file = await this.quizService.uploadFile(image);
+  //
+  //   return file.publicUrl;
   // }
-  @Post('image')
-  async uploadFile(@UploadedFile() image: File): Promise<Question> {
-    const file = await this.quizService.uploadFile(image);
-
-    return file.publicUrl;
-  }
-
-
 
 
   @Get("/:id")
@@ -118,3 +135,4 @@ export class QuizController {
   }
 
 }
+
