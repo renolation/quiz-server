@@ -33,3 +33,10 @@ export class QuizDto {
   @Expose()
   timestamp: number;
 }
+
+
+export enum LevelEnum {
+  Easy = 'Easy',
+  Medium = 'Medium',
+  Hard = 'Hard',
+}

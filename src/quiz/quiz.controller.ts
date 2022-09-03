@@ -39,9 +39,9 @@ export class QuizController {
       body.difficult, body.category, body.isEnable, body.explanation, timestamp);
   }
 
+  //region create image
   @Post("/createImage")
   @ApiConsumes("multipart/form-data")
-
   @UseInterceptors(FileFieldsInterceptor(
     [
       { name: "option1", maxCount: 1 },
@@ -68,39 +68,37 @@ export class QuizController {
     const timestamp = Math.floor(Date.now() / 1000);
 
     let answers = [];
-    const fileOption1 = await this.quizService.uploadFile(files['option1'][0], body, 1);
-    const fileOption2 = await this.quizService.uploadFile(files['option2'][0], body, 2);
-    const fileOption3 = await this.quizService.uploadFile(files['option3'][0], body, 3);
-    const fileOption4 = await this.quizService.uploadFile(files['option4'][0], body, 4);
+    const fileOption1 = await this.quizService.uploadFile(files['option1'][0], body, 1,timestamp);
+    const fileOption2 = await this.quizService.uploadFile(files['option2'][0], body, 2,timestamp);
+    const fileOption3 = await this.quizService.uploadFile(files['option3'][0], body, 3, timestamp);
+    const fileOption4 = await this.quizService.uploadFile(files['option4'][0], body, 4, timestamp);
 
     answers.push(fileOption1.publicUrl);
     answers.push(fileOption2.publicUrl);
     answers.push(fileOption3.publicUrl);
     answers.push(fileOption4.publicUrl);
 
-    console.log(answers);
-
     return this.quizService.create(body.question, answers, body.imageUrl, body.answer, body.level,
       body.difficult, body.category, body.isEnable, body.explanation, timestamp);
   }
+//endregion
 
-
-
-  @ApiOperation({ summary: "Update my User" })
-  @ApiConsumes("multipart/form-data")
-  @ApiBearerAuth()
-  @UseInterceptors(
-    FileInterceptor("avatar", {
-      storage: memoryStorage(
-      ),
-      limits: { fileSize: 2097152 }, // 2MB --- 2*2^20
-      fileFilter: (req, file, callback) => {
-        return file.mimetype.match(/image\/(jpg|jpeg|png)$/)
-          ? callback(null, true)
-          : callback(new BadRequestException("Only image files are allowed"), false);
-      }
-    })
-  )
+  //region test upload
+  // @ApiOperation({ summary: "Update my User" })
+  // @ApiConsumes("multipart/form-data")
+  // @ApiBearerAuth()
+  // @UseInterceptors(
+  //   FileInterceptor("avatar", {
+  //     storage: memoryStorage(
+  //     ),
+  //     limits: { fileSize: 2097152 }, // 2MB --- 2*2^20
+  //     fileFilter: (req, file, callback) => {
+  //       return file.mimetype.match(/image\/(jpg|jpeg|png)$/)
+  //         ? callback(null, true)
+  //         : callback(new BadRequestException("Only image files are allowed"), false);
+  //     }
+  //   })
+  // )
 
   // @Post("image")
   // async uploadFile(@UploadedFile() image: File): Promise<Question> {
@@ -108,6 +106,7 @@ export class QuizController {
   //
   //   return file.publicUrl;
   // }
+  //endregion
 
 
   @Get("/:id")
