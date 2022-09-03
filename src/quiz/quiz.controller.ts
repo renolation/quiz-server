@@ -6,7 +6,7 @@ import {
   Get,
   Param,
   Patch,
-  Post, UploadedFile,
+  Post, Query, UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors
@@ -21,6 +21,7 @@ import { ApiBearerAuth, ApiConsumes, ApiOperation } from "@nestjs/swagger";
 import { memoryStorage } from "multer";
 import { File } from "../core/interfaces/file.interface";
 import { Question } from "./entity/question.entity";
+import { LevelEnum } from "./dtos/quiz.dto";
 
 @Controller("quiz")
 export class QuizController {
@@ -68,10 +69,10 @@ export class QuizController {
     const timestamp = Math.floor(Date.now() / 1000);
 
     let answers = [];
-    const fileOption1 = await this.quizService.uploadFile(files['option1'][0], body, 1,timestamp);
-    const fileOption2 = await this.quizService.uploadFile(files['option2'][0], body, 2,timestamp);
-    const fileOption3 = await this.quizService.uploadFile(files['option3'][0], body, 3, timestamp);
-    const fileOption4 = await this.quizService.uploadFile(files['option4'][0], body, 4, timestamp);
+    const fileOption1 = await this.quizService.uploadFile(files["option1"][0], body, 1, timestamp);
+    const fileOption2 = await this.quizService.uploadFile(files["option2"][0], body, 2, timestamp);
+    const fileOption3 = await this.quizService.uploadFile(files["option3"][0], body, 3, timestamp);
+    const fileOption4 = await this.quizService.uploadFile(files["option4"][0], body, 4, timestamp);
 
     answers.push(fileOption1.publicUrl);
     answers.push(fileOption2.publicUrl);
@@ -120,6 +121,7 @@ export class QuizController {
   }
 
 
+
   @Patch("/:id")
   updateQuestion(@Param("id") id: string, @Body() body: UpdateQuizDto) {
     console.log(body);
@@ -132,6 +134,17 @@ export class QuizController {
   removeQuestion(@Param("id") id: string) {
     return this.quizService.remove(parseInt(id));
   }
+
+  @Get("/category/:category")
+  getQuizByCategory(@Param("category") category: string) {
+    return this.quizService.findQuizByCategory(category);
+  }
+
+  @Get("/level/:level")
+  getQuizByLevel(@Param("level") level: LevelEnum) {
+    return this.quizService.findQuizByLevel(level);
+  }
+
 
 }
 

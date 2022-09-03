@@ -8,6 +8,8 @@ import { CloudStorageService } from "../core/services/cloud-storage.service";
 import { File } from "../core/interfaces/file.interface";
 import { parse } from "path";
 import { CreateImageQuizDto } from "./dtos/create-image-quiz.dto";
+import { Equals } from "class-validator";
+import { LevelEnum } from "./dtos/quiz.dto";
 
 
 @Injectable()
@@ -42,7 +44,7 @@ export class QuizService {
     async findOne(id: number) {
         const question = await this.repo.findOneBy({ id: id });
         if (!question) {
-            throw new NotFoundException('Template not found');
+            throw new NotFoundException('Quiz not found');
         }
         console.log(question);
         return question;
@@ -69,5 +71,29 @@ export class QuizService {
             throw new NotFoundException('Question not found');
         }
         return this.repo.remove(question);
+    }
+
+    async findQuizByCategory(category: string) {
+        const questions = await this.repo.find({
+            where: {
+                category: category,
+            }
+        });
+        if(!questions){
+            throw new NotFoundException('Not found')
+        }
+        return questions;
+    }
+
+    async findQuizByLevel(level: LevelEnum) {
+        const questions = await this.repo.find({
+            where: {
+                level: level,
+            }
+        });
+        if(!questions){
+            throw new NotFoundException('Not found')
+        }
+        return questions;
     }
 }
