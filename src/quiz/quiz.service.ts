@@ -20,7 +20,7 @@ export class QuizService {
       private cloudStorageService: CloudStorageService
       ) { }
 
-    async create(question: string, answers: MyOption[], imageUrl: string, answer: number,level: string, difficult: number, category: string, isEnable: boolean, explanation: string, timestamp: number){
+    async create(question: string, answers: string[], imageUrl: string, answer: number,level: string, difficult: number, category: string, isEnable: boolean, explanation: string, timestamp: number){
         const myQuestion = this.repo.create({question, answers, imageUrl, answer,level, difficult, category, isEnable, explanation: explanation, timestamp});
         await this.repo.save(myQuestion);
         console.log(myQuestion);
@@ -33,15 +33,13 @@ export class QuizService {
         // return `${fileName.name}-${Date.now()}${fileName.ext}`.replace(/^\.+/g, '').replace(/^\/+/g, '').replace(/\r|\n/g, '_');
     }
 
-    setImageFileName(uploadedFile: File, body: CreateQuizDto, timestamp: number): string {
+    setImageFileName(uploadedFile: File, body: any, timestamp: number): string {
         const fileName = parse(uploadedFile.originalname);
         return `${body.category}_${body.level}_Difficult-${body.difficult}_Image_${timestamp}${fileName.ext}`;
         // return `${fileName.name}-${Date.now()}${fileName.ext}`.replace(/^\.+/g, '').replace(/^\/+/g, '').replace(/\r|\n/g, '_');
     }
 
     async uploadFile(image: File){
-        // image.filename = this.setFilename(image, body, index, timestamp);
-
         const file = await this.cloudStorageService.uploadFile(image, '/quiz/image/');
         console.log(file);
         return file;

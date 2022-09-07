@@ -32,7 +32,7 @@ export class Question {
     //endregion
 
     @Column('jsonb', {nullable: true})
-    answers?: MyOption[];
+    answers?: string[];
 
     @Column()
     imageUrl: string;

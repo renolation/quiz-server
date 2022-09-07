@@ -7,7 +7,7 @@ export class QuizDto {
   id: number;
 
   @Expose()
-  answers?: MyOption[];
+  answers?: string[];
 
   @Expose()
   imageUrl: string;

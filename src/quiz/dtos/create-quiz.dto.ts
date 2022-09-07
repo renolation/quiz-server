@@ -21,11 +21,12 @@ export class CreateQuizDto {
   @IsNotEmpty()
   question: string;
 
-  @IsArray()
+  // @IsArray()
+  @ApiProperty({ type: [String] })
   @IsNotEmpty()
   @ArrayMaxSize(4)
   @ArrayMinSize(2)
-  answers: MyOption[];
+  answers: string[];
 
   // @IsString()
   // @IsNotEmpty()

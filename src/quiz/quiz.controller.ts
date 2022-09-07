@@ -35,12 +35,14 @@ export class QuizController {
   @Post("/create")
   @UseInterceptors(FileInterceptor('file'))
   async create(@Body() body: CreateQuizDto, @UploadedFile() file: Express.Multer.File) {
-
+    let imageUrl = '';
+    console.log(body);
     const timestamp = Math.floor(Date.now() / 1000);
     // const imageUrl = await this.quizService.uploadFile(file, body, 1, timestamp);
-    file.filename =  this.quizService.setImageFileName(file, body, timestamp);
-    let imageUrl = await this.quizService.uploadFile(file);
-    // console.log(file);
+    if(file != null){
+      file.filename =  this.quizService.setImageFileName(file, body, timestamp);
+      imageUrl = await this.quizService.uploadFile(file);
+    }
     return this.quizService.create(body.question, body.answers, imageUrl, body.answer, body.level,
       body.difficult, body.category, body.isEnable, body.explanation, timestamp);
   }
@@ -53,7 +55,8 @@ export class QuizController {
       { name: "option1", maxCount: 1 },
       { name: "option2", maxCount: 1 },
       { name: "option3", maxCount: 1 },
-      { name: "option4", maxCount: 1 }
+      { name: "option4", maxCount: 1 },
+      { name: "imageFile", maxCount: 1 }
     ],
     {
       storage: memoryStorage(),
@@ -69,32 +72,44 @@ export class QuizController {
     option1?: Express.Multer.File[],
     option2?: Express.Multer.File[],
     option3?: Express.Multer.File[],
-    option4?: Express.Multer.File[]
+    option4?: Express.Multer.File[],
+    imageFile?: Express.Multer.File[],
   }) {
     const timestamp = Math.floor(Date.now() / 1000);
 
     let answers = [];
     let imageUrl = '';
-    let file1 : File = files["option1"][0];
-    let file2 : File = files["option2"][0];
-    let file3 : File = files["option3"][0];
-    let file4 : File = files["option4"][0];
+    if(files["option1"] != null){
+      let file1 : File = files["option1"][0];
+      file1.filename = this.quizService.setFilename(file1, body, 1, timestamp);
+      const fileOption1 = await this.quizService.uploadFile(file1);
+      answers.push(fileOption1.publicUrl);
+    }
+    if(files["option2"] != null){
+      let file2 : File = files["option2"][0];
+      file2.filename = this.quizService.setFilename(file2, body, 2, timestamp);
+      const fileOption2 = await this.quizService.uploadFile(file2);
+      answers.push(fileOption2.publicUrl);
+    }
+    if(files["option3"] != null){
+      let file3 : File = files["option3"][0];
+      file3.filename = this.quizService.setFilename(file3, body, 3, timestamp);
+      const fileOption3 = await this.quizService.uploadFile(file3);
+      answers.push(fileOption3.publicUrl);
+    }
+    if(files["option4"] != null){
+      let file4 : File = files["option4"][0];
+      file4.filename = this.quizService.setFilename(file4, body, 4, timestamp);
+      const fileOption4 = await this.quizService.uploadFile(file4);
+      answers.push(fileOption4.publicUrl);
+    }
+    if(files["imageFile"] != null){
+      let imageFile : File = files["imageFile"][0];
+      imageFile.filename = this.quizService.setImageFileName(imageFile, body, timestamp);
+      const image = await this.quizService.uploadFile(imageFile);
+      imageUrl = image.publicUrl;
+    }
 
-    file1.filename = this.quizService.setFilename(file1, body, 1, timestamp);
-    file2.filename = this.quizService.setFilename(file2, body, 2, timestamp);
-    file3.filename = this.quizService.setFilename(file3, body, 3, timestamp);
-    file4.filename = this.quizService.setFilename(file4, body, 4, timestamp);
-
-
-    const fileOption1 = await this.quizService.uploadFile(file1);
-    const fileOption2 = await this.quizService.uploadFile(file2);
-    const fileOption3 = await this.quizService.uploadFile(file3);
-    const fileOption4 = await this.quizService.uploadFile(file4);
-
-    answers.push(fileOption1.publicUrl);
-    answers.push(fileOption2.publicUrl);
-    answers.push(fileOption3.publicUrl);
-    answers.push(fileOption4.publicUrl);
 
     // console.log(answers);
     // return answers;

@@ -19,7 +19,7 @@ export class UpdateQuizDto {
   @IsOptional()
   @ArrayMaxSize(4)
   @ArrayMinSize(2)
-  answers: MyOption[];
+  answers: string[];
 
   @IsString()
   @IsOptional()
