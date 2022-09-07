@@ -6,7 +6,7 @@ import {
   IsDate,
   IsEmail, IsEnum,
   IsNotEmpty,
-  IsNumber,
+  IsNumber, IsOptional,
   IsString, Max, Min
 } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
@@ -17,6 +17,7 @@ import { LevelEnum } from "./quiz.dto";
 export class CreateQuizDto {
 
   @IsString()
+  @Type(() => String)
   @IsNotEmpty()
   question: string;
 
@@ -26,12 +27,13 @@ export class CreateQuizDto {
   @ArrayMinSize(2)
   answers: MyOption[];
 
-  @IsString()
+  // @IsString()
   // @IsNotEmpty()
-  imageUrl: string;
+  // imageUrl: string;
 
   @IsNumber()
   @IsNotEmpty()
+  @Type(() => Number)
   answer: number;
 
   @ApiProperty({ enum: LevelEnum})
@@ -42,20 +44,25 @@ export class CreateQuizDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @Type(() => Number)
   @Max(5)
   @Min(1)
   difficult: number;
 
   @IsString()
   @IsNotEmpty()
+  @Type(() => String)
   category: string;
 
+
   @IsBoolean()
-  @IsNotEmpty()
-  isEnable: boolean;
+  @IsOptional()
+  @Type(() => Boolean)
+  isEnable: boolean = true;
 
   @IsString()
-  @IsNotEmpty()
-  explanation: string;
+  @IsOptional()
+  @Type(() => String)
+  explanation: string = '';
 
 }

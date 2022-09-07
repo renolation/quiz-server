@@ -10,6 +10,7 @@ import { parse } from "path";
 import { CreateImageQuizDto } from "./dtos/create-image-quiz.dto";
 import { Equals } from "class-validator";
 import { LevelEnum } from "./dtos/quiz.dto";
+import { CreateQuizDto } from "./dtos/create-quiz.dto";
 
 
 @Injectable()
@@ -21,23 +22,28 @@ export class QuizService {
 
     async create(question: string, answers: MyOption[], imageUrl: string, answer: number,level: string, difficult: number, category: string, isEnable: boolean, explanation: string, timestamp: number){
         const myQuestion = this.repo.create({question, answers, imageUrl, answer,level, difficult, category, isEnable, explanation: explanation, timestamp});
-        // await this.repo.save(myQuestion);
+        await this.repo.save(myQuestion);
         console.log(myQuestion);
         return myQuestion;
     }
 
-    private setFilename(uploadedFile: File, body: CreateImageQuizDto, index: number, timestamp: number): string {
+    setFilename(uploadedFile: File, body: CreateImageQuizDto, index: number, timestamp: number): string {
         const fileName = parse(uploadedFile.originalname);
         return `${body.category}_${body.level}_Difficult-${body.difficult}_Option-${index}_${timestamp}${fileName.ext}`;
         // return `${fileName.name}-${Date.now()}${fileName.ext}`.replace(/^\.+/g, '').replace(/^\/+/g, '').replace(/\r|\n/g, '_');
     }
 
-    async uploadFile(image: File, body: CreateImageQuizDto, index: number, timestamp: number){
-        image.filename = this.setFilename(image, body, index, timestamp);
-        console.log(image);
+    setImageFileName(uploadedFile: File, body: CreateQuizDto, timestamp: number): string {
+        const fileName = parse(uploadedFile.originalname);
+        return `${body.category}_${body.level}_Difficult-${body.difficult}_Image_${timestamp}${fileName.ext}`;
+        // return `${fileName.name}-${Date.now()}${fileName.ext}`.replace(/^\.+/g, '').replace(/^\/+/g, '').replace(/\r|\n/g, '_');
+    }
+
+    async uploadFile(image: File){
+        // image.filename = this.setFilename(image, body, index, timestamp);
+
         const file = await this.cloudStorageService.uploadFile(image, '/quiz/image/');
-        // // const url = file.publicUrl;
-        // // const name = file.name;
+        console.log(file);
         return file;
     }
 

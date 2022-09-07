@@ -6,7 +6,7 @@ import {
   IsDate,
   IsEmail, IsEnum,
   IsNotEmpty,
-  IsNumber,
+  IsNumber, IsOptional,
   IsString, Max, Min
 } from "class-validator";
 import { MyOption } from "../entity/option.entity";
@@ -22,10 +22,10 @@ export class CreateImageQuizDto {
   question: string;
 
 
-  @IsString()
-  @Type(() => String)
+  // @IsString()
+  // @Type(() => String)
   // @IsNotEmpty()
-  imageUrl:  string;
+  // imageUrl:  string;
 
   @IsNumber()
   @Type(() => Number)
@@ -52,13 +52,13 @@ export class CreateImageQuizDto {
   category: string;
 
   @IsBoolean()
+  @IsOptional()
   @Type(() => Boolean)
-  @IsNotEmpty()
-  isEnable: boolean;
+  isEnable: boolean = true;
 
   @IsString()
+  @IsOptional()
   @Type(() => String)
-  @IsNotEmpty()
-  explanation: string;
+  explanation: string = '';
 
 }
