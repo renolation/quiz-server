@@ -41,7 +41,7 @@ export class QuizController {
     // const imageUrl = await this.quizService.uploadFile(file, body, 1, timestamp);
     if(file != null){
       file.filename =  this.quizService.setImageFileName(file, body, timestamp);
-      imageUrl = await this.quizService.uploadFile(file);
+      imageUrl = await this.quizService.uploadFile(file, body.category);
     }
     return this.quizService.create(body.question, body.answers, imageUrl, body.answer, body.level,
       body.difficult, body.category, body.isEnable, body.explanation, timestamp);
@@ -82,31 +82,31 @@ export class QuizController {
     if(files["option1"] != null){
       let file1 : File = files["option1"][0];
       file1.filename = this.quizService.setFilename(file1, body, 1, timestamp);
-      const fileOption1 = await this.quizService.uploadFile(file1);
+      const fileOption1 = await this.quizService.uploadFile(file1, body.category);
       answers.push(fileOption1.publicUrl);
     }
     if(files["option2"] != null){
       let file2 : File = files["option2"][0];
       file2.filename = this.quizService.setFilename(file2, body, 2, timestamp);
-      const fileOption2 = await this.quizService.uploadFile(file2);
+      const fileOption2 = await this.quizService.uploadFile(file2, body.category);
       answers.push(fileOption2.publicUrl);
     }
     if(files["option3"] != null){
       let file3 : File = files["option3"][0];
       file3.filename = this.quizService.setFilename(file3, body, 3, timestamp);
-      const fileOption3 = await this.quizService.uploadFile(file3);
+      const fileOption3 = await this.quizService.uploadFile(file3, body.category);
       answers.push(fileOption3.publicUrl);
     }
     if(files["option4"] != null){
       let file4 : File = files["option4"][0];
       file4.filename = this.quizService.setFilename(file4, body, 4, timestamp);
-      const fileOption4 = await this.quizService.uploadFile(file4);
+      const fileOption4 = await this.quizService.uploadFile(file4, body.category);
       answers.push(fileOption4.publicUrl);
     }
     if(files["imageFile"] != null){
       let imageFile : File = files["imageFile"][0];
       imageFile.filename = this.quizService.setImageFileName(imageFile, body, timestamp);
-      const image = await this.quizService.uploadFile(imageFile);
+      const image = await this.quizService.uploadFile(imageFile, body.category);
       imageUrl = image.publicUrl;
     }
 

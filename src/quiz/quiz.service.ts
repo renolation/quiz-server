@@ -39,8 +39,8 @@ export class QuizService {
         // return `${fileName.name}-${Date.now()}${fileName.ext}`.replace(/^\.+/g, '').replace(/^\/+/g, '').replace(/\r|\n/g, '_');
     }
 
-    async uploadFile(image: File){
-        const file = await this.cloudStorageService.uploadFile(image, '/quiz/image/');
+    async uploadFile(image: File, folder: string){
+        const file = await this.cloudStorageService.uploadFile(image, '/quiz/image/' +folder);
         console.log(file);
         return file;
     }
