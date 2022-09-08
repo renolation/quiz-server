@@ -56,7 +56,7 @@ export class QuizService {
 
     async findAll()  {
        const items = await this.repo.find({});
-        return JSON.stringify(items);
+        return JSON.stringify(items, null, 4);
     }
 
     async update(id: number, attrs: Partial<Question>) {
@@ -66,7 +66,7 @@ export class QuizService {
         }
         Object.assign(question, attrs);
         await this.repo.save(question);
-        return JSON.stringify(question);
+        return JSON.stringify(question, null, 4);
     }
 
     async remove(id: number) {
