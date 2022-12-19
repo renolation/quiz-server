@@ -2,23 +2,23 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Question } from './quiz/entity/question.entity';
-import { QuizModule } from './quiz/quiz.module';
+import { QuoteModule } from './quote/quote.module';
+import { Quote } from "./quote/entity/quote.entity";
+import { StyleText } from "./quote/entity/style_text.entity";
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db.tstdfwkbjwzfzbqgpfvt.supabase.co',
+      host: '104.198.7.141',
       port: 5432,
-      username: 'postgres',
-      password: 'Renolation29@@',
-      database: 'postgres',
-      entities: [Question],
+      username: 'phuocnguyen',
+      password: 'renolation29',
+      database: 'quotes',
+      entities: [Quote, StyleText],
       synchronize: true,
-
     }),
-    QuizModule
+    QuoteModule
   ],
   controllers: [AppController],
   providers: [AppService],
