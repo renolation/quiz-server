@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { FontStyleEnum, FontWeightEnum } from "../../core/enums/style_text.enum";
+import { Quote } from "./quote.entity";
 
 
 @Entity()
@@ -8,12 +9,15 @@ export class StyleText{
   @PrimaryGeneratedColumn()
   id: number;
 
+  @OneToMany(() => Quote, (quote) => quote.styleText)
+  quotes: Quote[]
+
+
   @Column()
   fontFamily: string;
 
   @Column()
   height: number;
-
 
     @Column()
     color: string;

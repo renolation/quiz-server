@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne , JoinColumn} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne , ManyToOne} from "typeorm";
 import { StyleText } from "./style_text.entity";
 
 @Entity()
@@ -31,9 +31,12 @@ export class Quote{
   // @Column()
   // styleText: StyleTextInterface;
 
-  @OneToOne(() => StyleText)
-  @JoinColumn()
-  styleText: StyleText
+  // @OneToOne(() => StyleText)
+  // @JoinColumn()
+  // styleText: StyleText
+
+  @ManyToOne(() => StyleText, (styleText) => styleText.quotes)
+  styleText: StyleText;
 
   @Column()
   isVerify: boolean;
